@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "nordholm",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["serve.py", "5179"],
+      "port": 5179
+    }
+  ]
+}
