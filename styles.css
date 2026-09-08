@@ -214,7 +214,10 @@ a { color: inherit; }
   position: absolute;
   left: var(--shell);
   bottom: clamp(3.5rem, 12vh, 8rem);
-  width: min(46ch, calc(100% - var(--shell) * 2 - 5rem));
+  /* wide enough that the headings break only where their <br> says.
+     `ch` here would be measured against the body size, not the display
+     size, and squeezes a 5rem headline into a paragraph column. */
+  width: min(46rem, calc(100% - var(--shell) * 2 - 5rem));
   color: var(--snow);
   text-shadow: 0 1px 30px rgba(6, 11, 16, 0.55);
   opacity: 0;
