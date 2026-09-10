@@ -63,3 +63,20 @@ jobs:
             exit 1
           fi
           echo "clean"
+
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pytest and a browser
+        run: |
+          pip install pytest playwright==1.48.0
+          python -m playwright install --with-deps chromium
+
+      - name: Smoke test in a real browser
+        run: python -m pytest -q tests
