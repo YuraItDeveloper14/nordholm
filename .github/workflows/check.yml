@@ -1,0 +1,56 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: index.html exists
+        run: test -f index.html
+
+      - name: HTML parses and local links resolve
+        run: |
+          python - <<'PY'
+          import pathlib, sys
+          from html.parser import HTMLParser
+
+          missing, checked = [], 0
+
+          class Links(HTMLParser):
+              def handle_starttag(self, tag, attrs):
+                  global checked
+                  d = dict(attrs)
+                  for key in ("src", "href"):
+                      v = d.get(key)
+                      if not v or v.startswith(("http", "//", "#", "data:", "mailto:")):
+                          continue
+                      target = pathlib.Path(v.split("?")[0].split("#")[0])
+                      checked += 1
+                      if not target.exists():
+                          missing.append(f"{key}={v}")
+
+          for page in pathlib.Path(".").glob("*.html"):
+              Links().feed(page.read_text(encoding="utf-8", errors="replace"))
+
+          print(f"checked {checked} local references")
+          if missing:
+              print("broken:")
+              for m in missing:
+                  print("  " + m)
+              sys.exit(1)
+          PY
+
+      - name: no leftover debug statements
+        run: |
+          if grep -rn "debugger;" --include="*.js" .; then
+            echo "debugger statement left in the source"
+            exit 1
+          fi
+          echo "clean"
