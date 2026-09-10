@@ -21,6 +21,10 @@ jobs:
           import pathlib, sys
           from html.parser import HTMLParser
 
+          # усе, що не веде на файл у репозиторії
+          SCHEMES = ("http:", "https:", "//", "#", "data:", "mailto:",
+                     "tel:", "sms:", "javascript:", "blob:")
+
           missing, checked = [], 0
 
           class Links(HTMLParser):
@@ -28,15 +32,19 @@ jobs:
                   global checked
                   d = dict(attrs)
                   for key in ("src", "href"):
-                      v = d.get(key)
-                      if not v or v.startswith(("http", "//", "#", "data:", "mailto:")):
+                      v = (d.get(key) or "").strip()
+                      if not v or v.lower().startswith(SCHEMES):
                           continue
-                      target = pathlib.Path(v.split("?")[0].split("#")[0])
+                      path = v.split("?")[0].split("#")[0]
+                      if not path:
+                          continue
+                      # "/asset.png" — від кореня сайту, тобто від кореня репозиторію
+                      target = pathlib.Path(path.lstrip("/"))
                       checked += 1
                       if not target.exists():
                           missing.append(f"{key}={v}")
 
-          for page in pathlib.Path(".").glob("*.html"):
+          for page in sorted(pathlib.Path(".").glob("*.html")):
               Links().feed(page.read_text(encoding="utf-8", errors="replace"))
 
           print(f"checked {checked} local references")
@@ -45,11 +53,12 @@ jobs:
               for m in missing:
                   print("  " + m)
               sys.exit(1)
+          print("all resolve")
           PY
 
       - name: no leftover debug statements
         run: |
-          if grep -rn "debugger;" --include="*.js" .; then
+          if grep -rn "debugger;" --include="*.js" . ; then
             echo "debugger statement left in the source"
             exit 1
           fi
