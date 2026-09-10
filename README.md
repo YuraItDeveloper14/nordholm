@@ -1,5 +1,8 @@
 # Nordholm
 
+<!-- badges -->
+[![CI](https://github.com/YuraItDeveloper14/nordholm/actions/workflows/check.yml/badge.svg)](https://github.com/YuraItDeveloper14/nordholm/actions/workflows/check.yml) [![License](https://img.shields.io/github/license/YuraItDeveloper14/nordholm?color=blue)](LICENSE) [![Last commit](https://img.shields.io/github/last-commit/YuraItDeveloper14/nordholm)](https://github.com/YuraItDeveloper14/nordholm/commits)
+
 One-page site for a fictional winter timber-build company. The whole hero is a
 scroll-driven time-lapse: scroll position maps onto the video's `currentTime`,
 so the house is built by the reader rather than played at them.
