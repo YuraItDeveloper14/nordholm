@@ -110,3 +110,9 @@ claim.
 The time-lapse is AI-generated video, not footage of an actual building site.
 Its visible generator mark was cropped out during the re-encode above; the
 invisible SynthID watermark is still embedded in the file.
+
+## Tests
+
+`python -m pytest -q tests` serves the page locally, opens it in Chromium and checks
+that the headline shows and no script error is thrown — on load and while scrolling.
+Needs `pip install pytest playwright` and `python -m playwright install chromium`.
